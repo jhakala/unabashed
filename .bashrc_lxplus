@@ -1,0 +1,24 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# User specific aliases and functions
+alias ssh="ssh -Y"
+#alias ls="ls -G --color"
+alias l="ls -lrth"
+alias rm="rm -i"
+export HCHOSTNAME=$(echo $HOSTNAME | awk '{print substr($1, 0, 10) }')
+PS1="\[\e[0;36m\]\u@${HCHOSTNAME}\[\e[m\] \[\e[0;37m\]\w\[\e[m\] \[\e[0;35m\]#\[\e[m\] \[\e[1;00m\]"
+bind '"\eOP":"\e\C-e\C-i"'
+alias s="~/search.sh"
+alias pcp="source ~/copyWithProgress.sh"
+alias pmv="source ~/moveWithProgress.sh"
+alias fpcp="source ~/forceCopyWithProgress.sh"
+alias bhsetup="source bhSetup.sh /afs/cern.ch/user/j/johakala/work/public/CMSSW_7_4_14/src"
+alias bsuball_8nh="for i in `ls -1`; do bsub -q 8nh $i; done"
+alias bsuball_1nh="for i in `ls -1`; do bsub -q 1nh $i; done"
+alias setupTDR="source ~/setupTDR.sh"
+alias goToWZgammaMacros="cd ~/work/public/CMSSW_7_4_16_patch1/src; cmsenv; cd ~/work/public/WZgammaMacros"
