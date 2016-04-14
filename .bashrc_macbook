@@ -1,11 +1,7 @@
 export PATH=/usr/local/bin:/usr/local/mysql/bin:$PATH
-export START_DIR=$PWD
-cd /Applications/root
-source bin/thisroot.sh
-cd $START_DIR
-unset START_DIR
 export DYLD_LIBRARY_PATH=$ROOTSYS/lib:/usr/local/mysql/lib:$DYLD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+source /usr/local/Cellar/root6/6.06.02_1/libexec/thisroot.sh
 export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH:/Users/johnhakala/PyPDT-0.5.1
 export MYSQL=/usr/local/mysql/bin
 export EDITOR=/usr/bin/vim
@@ -21,10 +17,11 @@ alias tls="ls -lrt"
 alias ant="/Users/johnhakala/Applications/apache-ant-1.9.4/bin/ant"
 alias bef="/Users/johnhakala/befunge/src/bef"
 alias tmux="tmux -2"
-alias omdsRS="~/hcalmanager.sh omds &"
-alias p5RS="~/hcalmanager.sh p5 &"
-alias 904RS="~/hcalmanager.sh 904 &"
+alias omdsRS="~/unabashed/hcalmanager.sh omds &"
+alias p5RS="~/unabashed/hcalmanager.sh p5 &"
+alias 904RS="~/unabashed/hcalmanager.sh 904 &"
 export PS1="\[\033[0;36m\]\u@JHakBookPro\[\033[0;37m\] \w \[\033[0;35m\]▹\[\033[00m\] "
+alias dbtunnel="~/unabashed/dbtunnel.sh"
 
 # these are my custom scripts for note taking
 alias note="~/Documents/notes.sh"
@@ -42,3 +39,4 @@ alias dlDN="source ~/dlDN.sh"
 alias dlANandPAS="source ~/dlANandPAS.sh"
 alias pullopenANandPAS="killall AdobeReader; open AN-15-130_temp.pdf EXO-15-007_temp.pdf"
 alias ANandPAS="dlANandPAS; pullopenANandPAS"
+alias tunnel="~/unabashed/tunnel.sh"
