@@ -5,9 +5,9 @@
 # Example: ./hcalmanager.sh omds
 if [ "$1" = "p5" ] || [ "$1" = "904" ] || [ "$1" = "omds" ] ; then
   echo "Launching hcalmanager for the $1 database"
-  rm -f RSMANAGER.properties
-  cp ~/RSMANAGER.${1}.properties ~/RSMANAGER.properties
-  /Library/Java/JavaVirtualMachines/1.7.0.jdk/Contents/Home/bin/java -jar hcalmanager.jar
+  rm -f ~/RSMANAGER.properties
+  cp ~/unabashed/RSMANAGER.${1}.properties ~/RSMANAGER.properties
+  java -jar ~/hcalmanager.jar
   # You may need to change the above line to point to where your java 7 jdk or jre's directory
 else
   echo "Please run hcalmanager.sh with one of the following options for selecting an RS database: 'p5', '904', or 'omds'"
