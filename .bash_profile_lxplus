@@ -9,6 +9,5 @@ fi
 ANT_HOME=/home/daqowner/ant/bin
 PATH=$PATH:$HOME/bin:/home/daqowner/ant/bin:/etc/init.d
 export PATH
-alias rm="rm -i"
-alias ls="ls -G"
+
 bind '"\eOP":"\e\C-e\C-i"'
