@@ -9,8 +9,8 @@ if [ "$#" -ne 1 ];then
 fi
 
 if [ "$1" = "outside" ]; then
-  expect -c 'eval spawn ssh -Y -t -f lxplus.cern.ch -L1081:localhost:1081 "ssh -t -f -ND 1081 cmsusr" &; interact'
-  expect -c 'eval spawn ssh -Y -t -f lxplus.cern.ch -L1080:localhost:1080 "ssh -t -f -ND 1080 cms904usr" &; interact'
+  expect -c 'eval spawn ssh -Y -f lxplus.cern.ch -L1081:localhost:1081 "ssh -f -ND 1081 cmsusr" &; interact'
+  expect -c 'eval spawn ssh -Y -f lxplus.cern.ch -L1080:localhost:1080 "ssh -f -ND 1080 cms904usr" &; interact'
 elif [ "$1" = "cern" ]; then
   expect -c 'eval spawn ssh -f -ND 1081 cmsusr.cern.ch &; interact'
   expect -c 'eval spawn ssh -f -ND 1080 cms904usr.cern.ch &; interact'

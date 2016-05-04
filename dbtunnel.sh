@@ -18,9 +18,9 @@ if [ $2 = "cms" ]; then
 	fi
 elif [ $2 = "904" ]; then
 	if [ $1 = "outside" ]; then
-		ssh -Y -t -f lxplus.cern.ch -L10121:localhost:10121 "ssh -Y -NL10121:int2r1-v.cern.ch:10121 cms904usr" 
+		ssh -Y -t -f lxplus.cern.ch -L10122:localhost:10122 "ssh -Y -NL10121:int2r1-v.cern.ch:10121 cms904usr" 
 	elif [ $1 = "cern" ]; then
-		ssh -Y -f -NL10121:int2r1-v.cern.ch:10121 cms904usr.cern.ch
+		ssh -Y -f -NL10122:int2r1-v.cern.ch:10121 cms904usr.cern.ch
   else
     echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms' or '904'"
     exit 1
