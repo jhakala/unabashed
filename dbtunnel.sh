@@ -9,7 +9,7 @@ fi
 
 if [ $2 = "cms" ]; then
 	if [ $1 = "outside" ]; then
-		ssh -Y -t -f lxplus.cern.ch -L10121:localhost:10121 "ssh -Y -NL10121:cmsrac31-v:10121 cmsusr" 
+		ssh -Y -f lxplus.cern.ch -L10121:localhost:10121 "ssh -Y -NL10121:cmsrac31-v:10121 cmsusr" 
 	elif [ $1 = "cern" ]; then
 		ssh -Y -f -NL:10121:cmsrac31-v:10121 cmsusr.cern.ch
   else
@@ -18,7 +18,7 @@ if [ $2 = "cms" ]; then
 	fi
 elif [ $2 = "904" ]; then
 	if [ $1 = "outside" ]; then
-		ssh -Y -t -f lxplus.cern.ch -L10122:localhost:10122 "ssh -Y -NL10121:int2r1-v.cern.ch:10121 cms904usr" 
+		ssh -Y -f lxplus.cern.ch -L10122:localhost:10122 "ssh -Y -NL10122:int2r1-v.cern.ch:10121 cms904usr" 
 	elif [ $1 = "cern" ]; then
 		ssh -Y -f -NL10122:int2r1-v.cern.ch:10121 cms904usr.cern.ch
   else
