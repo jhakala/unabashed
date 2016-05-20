@@ -82,11 +82,11 @@ public class xmlParser {
         if (dataElement.getAttribute("item").equals("amplitude")){
           System.out.println("\nScaling " + inputXMLfile + ":");
           int amplitudeValue = Integer.parseInt(dataElement.getTextContent());
-          System.out.println("Old amplitude is: " + amplitudeValue);
+          System.out.println("Old amplitude value is: " + amplitudeValue);
           double newAmplitudeValue = ((double) amplitudeValue) * scaleValue;
           int newAmplitudeInt = (int) newAmplitudeValue; 
           dataElement.setTextContent(Integer.toString(newAmplitudeInt));
-          System.out.println("New amplitude value us: " + newAmplitudeInt);
+          System.out.println("New amplitude value is: " + newAmplitudeInt);
         }
       }
       
