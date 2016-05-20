@@ -21,17 +21,16 @@ alias omdsRS="~/unabashed/hcalmanager.sh omds &"
 alias p5RS="~/unabashed/hcalmanager.sh p5 &"
 alias 904RS="~/unabashed/hcalmanager.sh 904 &"
 export PS1="\[\033[0;36m\]\u@JHakBookPro\[\033[0;37m\] \w \[\033[0;35m\]▹\[\033[00m\] "
-alias dbtunnel="~/unabashed/dbtunnel.sh"
 
 # these are my custom scripts for note taking
-alias note="~/Documents/notes.sh"
-alias notes="vim ~/Documents/notesArchive/notes.tx"
-alias memo="~/Documents/memos.sh"
-alias memos="vim ~/Documents/notesArchive/memos.tx"
-alias ulnotes="~/Documents/ulnotes.sh"
-alias archivenotes="~/Documents/archivenotes.sh"
-alias freshnotes="~/Documents/freshnotes.sh"
-alias freshmemos="~/Documents/freshmemos.sh"
+alias note="~/Documents/notes/notes.sh"
+alias notes="vim ~/Documents/notes/notesArchive/notes.tx"
+alias memo="~/Documents/notes/memos.sh"
+alias memos="vim ~/Documents/notes/notesArchive/memos.tx"
+alias ulnotes="~/Documents/notes/ulnotes.sh"
+alias archivenotes="~/Documents/notes/archivenotes.sh"
+alias freshnotes="~/Documents/notes/freshnotes.sh"
+alias freshmemos="~/Documents/notes/freshmemos.sh"
 
 export PATH="$PATH:$GRAILS_HOME/bin:$HOME/.rvm/bin" # rails and grails
 #alias diff='diff -W $(( $(tput cols) - 2 ))'
@@ -39,4 +38,6 @@ alias dlDN="source ~/dlDN.sh"
 alias dlANandPAS="source ~/dlANandPAS.sh"
 alias pullopenANandPAS="killall AdobeReader; open AN-15-130_temp.pdf EXO-15-007_temp.pdf"
 alias ANandPAS="dlANandPAS; pullopenANandPAS"
+
 alias tunnel="~/unabashed/tunnel.sh"
+alias dbtunnel="~/unabashed/dbtunnel.sh"
