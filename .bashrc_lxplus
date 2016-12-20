@@ -7,12 +7,10 @@ fi
 
 # User specific aliases and functions
 alias ssh="ssh -Y"
-#alias ls="ls -G --color"
-alias l="ls -lrth"
-alias rm="rm -i"
-export HCHOSTNAME=$(echo $HOSTNAME | awk '{print substr($1, 0, 10) }')
+alias l="ls -lrth --color=auto"
+alias rm="rm -I"
+export HCHOSTNAME=$(echo $HOSTNAME | awk '{print substr($1, 0, 10) }' | sed 's/\.//g')
 PS1="\[\e[0;36m\]\u@${HCHOSTNAME}\[\e[m\] \[\e[0;37m\]\w\[\e[m\] \[\e[0;35m\]#\[\e[m\] \[\e[1;00m\]"
-bind '"\eOP":"\e\C-e\C-i"'
 alias s="~/search.sh"
 alias pcp="source ~/copyWithProgress.sh"
 alias pmv="source ~/moveWithProgress.sh"
