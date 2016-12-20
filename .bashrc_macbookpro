@@ -19,7 +19,12 @@ alias tmux="tmux -CC"
 alias omdsRS="~/unabashed/hcalmanager.sh omds &"
 alias p5RS="~/unabashed/hcalmanager.sh p5 &"
 alias 904RS="~/unabashed/hcalmanager.sh 904 &"
-export PS1="\[\033[0;36m\]\u@JHakBookPro\[\033[0;37m\] \w \[\033[0;35m\]▹\[\033[00m\] "
+#export PS1="\[\033[0;36m\]\u@JHakBookPro\[\033[0;37m\] \w \[\033[0;35m\]▹\[\033[00m\] "
+colo1='\e[0;36m'
+colo2='\e[0;37m'
+colo3='\e[0;35m'
+colo4='\e[0;00m'
+export PS1="\[${colo1}\]\u@JHakBookPro\[${colo2}\] \w \[${colo3}\]# \[${colo4}\]"
 
 # these are my custom scripts for note taking
 alias note="~/Documents/notes/notes.sh"
@@ -42,3 +47,5 @@ alias tunnel="~/unabashed/tunnel.sh"
 alias dbtunnel="~/unabashed/dbtunnel.sh"
 
 alias pyroot="python -i ~/unabashed/pyroot.py"
+alias getdraft="cd  ~/HgammaAN/drafts; source getdraft.sh; ls -lrth"
+source /Users/johakala/root/bin/thisroot.sh
