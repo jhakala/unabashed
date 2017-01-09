@@ -47,5 +47,5 @@ alias tunnel="~/unabashed/tunnel.sh"
 alias dbtunnel="~/unabashed/dbtunnel.sh"
 
 alias pyroot="python -i ~/unabashed/pyroot.py"
-alias getdraft="cd  ~/HgammaAN/drafts; source getdraft.sh; ls -lrth"
+alias getdraft="source ~/unabashed/getdraft.sh; ls -lrth"
 source /Users/johakala/root/bin/thisroot.sh
