@@ -9,12 +9,13 @@ def getRecipients() :
   # these are your @cern.ch email account names
   return ["john.charles.hakala"]  
 
-def sendWarning(hostName, dir, percent, waitBeforeWarningAgain):
+def sendWarning(hostName, dir, percent, waitBeforeWarningAgain, sendEmail):
   timestamp =  datetime.now().strftime("%Y-%m-%d %H:%M")
   message = "%s : \n Warning! The machine %s has %i percent usage in %s!" % (timestamp, hostName, percent, dir)
   print message
-  for recipient in getRecipients():
-    print getoutput("/nfshome0/hcalpro/bin/mailOut.pl '%s' 'Disk usage warning -- %s:%s' '%s'" % (recipient, hostName, dir, message))
+  if sendEmail:
+    for recipient in getRecipients():
+      print getoutput("/nfshome0/hcalpro/bin/mailOut.pl '%s' 'Disk usage warning -- %s:%s' '%s'" % (recipient, hostName, dir, message))
   sleep(waitBeforeWarningAgain)
 
 if __name__ == "__main__":
@@ -46,7 +47,7 @@ if __name__ == "__main__":
         if (options.verbose):
           print "percent usage of %s on %s: %i" % (options.dir, options.hostName, percent)
         if (percent > options.percent):
-          sendWarning(options.hostName, options.dir, percent, options.warnDelay)
+          sendWarning(options.hostName, options.dir, percent, options.warnDelay, options.email)
     if not foundLine:
       print "requested dir (%s) not found in response from df on %s. response: \n %s" % (
         options.dir, options.hostName, response
