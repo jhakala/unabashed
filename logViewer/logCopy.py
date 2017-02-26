@@ -1,4 +1,5 @@
 import subprocess
+import os
 from time import sleep
 from forcelink import force_symlink
 # this is a hack to avoid complex log rotation and deal with the difficulty of circular-buffer-style logs
