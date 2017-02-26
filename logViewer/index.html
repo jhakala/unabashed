@@ -1,9 +1,17 @@
 <html>
   <body>
     This page will retrieve the latest logs from the LogCollector logs (just like <tt>tail -NUMBER</tt>).
+    <br>
     <form action="/cgi-bin/jhakala/viewLogs.py" type="submit" method="get">
       Number of lines to show:
       <input type="number" name="numberOfLines">
+      <br>
+      Filter level: <br><tt>
+        <input type="radio" name="filter" value="INFO" checked> info<br>
+        <input type="radio" name="filter" value="WARN"> warn<br>
+        <input type="radio" name="filter" value="ERROR"> error 
+      </tt>
+      <br>
       <input type="submit">
     </form>
   </body>
