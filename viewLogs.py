@@ -7,8 +7,9 @@ from ansi2html import ansi2html
 # John Hakala, 2/25/17
 
 def getLastLogMessages(lines):
-  dirName = "~johakala/testLogDir"
-  incantation = "tail -%i %s/Logs_hcalpro.xml | ~hcalpro/scripts/Handsaw.pl" % (lines, dirName)
+  #dirName = "~johakala/testLogDir"
+  #incantation = "tail -%i %s/Logs_hcalpro.xml | ~hcalpro/scripts/Handsaw.pl" % (lines, dirName)
+  incantation = "tail -%i /nfshome0/elaird/errors.txt" % lines
   return getoutput(incantation)
   
 
@@ -32,9 +33,9 @@ try:
     html += "Showing last %i lines of logcollector logs" % nLines
     html += formatMessages(getLastLogMessages(nLines))
   else:
-    html += "the numberOfLines submitted seems to be a weird number: <tt> %s </tt>" % str(nLines)
+    html += "the numberOfLines submitted seems to be a weird number: <tt> %s </tt>" % str(numberOfLines)
 except ValueError:
-    html += "the numberOfLines submitted does not seem to be a number <tt> %s </tt>" % str(nLines)
+    html += "the numberOfLines submitted does not seem to be a number <tt> %s </tt>" % str(numberOfLines)
 
 
 html += "</body></html>"
