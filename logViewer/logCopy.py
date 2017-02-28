@@ -10,24 +10,26 @@ from forcelink import force_symlink
 # Start by making both processes... would be nicer to start proc2 later but it's not as easy
 args1 = "./mkLog1.sh"
 args2 = "./mkLog2.sh"
-copyProc1 = subprocess.Popen(args1)
-copyProc2 = subprocess.Popen(args2)
+copyProc1 = subprocess.Popen(args1, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+copyProc2 = subprocess.Popen(args2, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
 force_symlink("log1.xml", "log_copy.xml")
 while True:
   # now wait half a day before moving to the second copy
   sleep(60*60*12)
   force_symlink("log2.xml", "log_copy.xml")
   # kill the first copy process, remove its log, and restart it
-  copyProc1.kill()
+  # copyProc1.kill()
+  os.killpg(os.getpgid(copyProc1.pid), signal.SIGTERM)
   os.remove("log1.xml")
-  copyProc1 = subprocess.Popen(args1)
+  copyProc1 = subprocess.Popen(args1, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
   # wait half the day before moving back to the first copy
   sleep(60*60*12)
   force_symlink("log1.xml", "log_copy.xml")
   # now kill the second process, remove its log, and restart it
-  copyProc2.kill()
+  #copyProc2.kill()
+  os.killpg(os.getpgid(copyProc2.pid), signal.SIGTERM)
   os.remove("log2.xml")
-  copyProc2 = subprocess.Popen(args2)
+  copyProc2 = subprocess.Popen(args2, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
   
 
   
