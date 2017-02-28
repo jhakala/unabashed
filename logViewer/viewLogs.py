@@ -39,7 +39,7 @@ def getBody(numLines, filtLev):
     if numLines is None:
       body += "\n    <strong> you must select a number of lines to display.</strong>"
     else:
-      body += "\n    <strong> something looks fishy about the number of lines requested: %r" % numLines
+      body += "\n    <strong> something looks fishy about the number of lines requested:</strong> <tt>%r</tt>" % numLines
   body += "\n    <!-- body end -->"
   return body
 
