@@ -10,7 +10,7 @@ from logHtml import *
 def getLastLogMessages(lines, filter):
   logCopyName = "~johakala/logCopyer/log_copy.xml"
   incantation = "tail -%i %s | ~hcalpro/scripts/Handsaw.pl" % (lines, logCopyName)
-  if filter is not None:
+  if filter is not None and filter in ["INFO", "WARN", "ERROR"]:
     incantation += " --FILTER=%s" % filter
   #incantation = "tail -%i /nfshome0/elaird/errors.txt" % lines
   return getoutput(incantation)
@@ -25,7 +25,7 @@ def formatMessages(messages):
 
 def getBody(numLines, filtLev):
   body =  "    <!-- begin body -->\n"
-  if numLines is not None:
+  if numLines is not None and (isinstance(numLines, int) or isinstance(numLines, str)):
     try: 
       nLines = int(numLines)
       if nLines > 0:
@@ -36,7 +36,10 @@ def getBody(numLines, filtLev):
     except ValueError:
         body += "    the numberOfLines submitted does not seem to be a number <tt> %s </tt>" % str(numLines)
   else:
-   body += "\n    <strong> you must select a number of lines to display.</strong>"
+    if numLines is None:
+      body += "\n    <strong> you must select a number of lines to display.</strong>"
+    else:
+      body += "\n    <strong> something looks fishy about the number of lines requested: %r" % numLines
   body += "\n    <!-- body end -->"
   return body
 
