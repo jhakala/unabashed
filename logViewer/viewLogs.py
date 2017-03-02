@@ -14,11 +14,18 @@ def getLastLogMessages(lines, filter):
     incantation += " --FILTER=%s" % filter
   #incantation = "tail -%i /nfshome0/elaird/errors.txt" % lines
   return getoutput(incantation)
+
+def changeColors(styledLine):
+  styledLine = styledLine.replace('background-color:#00CD00', 'background-color:#00ae00; color:#ffffff')
+  styledLine = styledLine.replace('background-color:#CD0000', 'background-color:#dd3844; color:#ffffff')
+  styledLine = styledLine.replace('background-color:#00CDCD', 'background-color:#4c77aa; color:#ffffff')
+  styledLine = styledLine.replace('background-color:#CDCD00', 'background-color:#e8e866')
+  return styledLine
   
 def formatMessages(messages):
   formattedMessages = "    <br><tt>\n    <br>"
   for line in messages.splitlines():
-    formattedMessages += ansi2html(line, "xterm")
+    formattedMessages += changeColors(ansi2html(line, "xterm"))
     formattedMessages+="\n    <br>"
   formattedMessages += "    </tt>"
   return formattedMessages

@@ -21,6 +21,7 @@ while True:
   # kill the first copy process, remove its log, and restart it
   # copyProc1.kill()
   os.killpg(os.getpgid(copyProc1.pid), signal.SIGTERM)
+  copyProc1.wait()
   os.remove("log1.xml")
   copyProc1 = subprocess.Popen(args1, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
   # wait half the day before moving back to the first copy
@@ -29,6 +30,7 @@ while True:
   # now kill the second process, remove its log, and restart it
   #copyProc2.kill()
   os.killpg(os.getpgid(copyProc2.pid), signal.SIGTERM)
+  copyProc2.wait()
   os.remove("log2.xml")
   copyProc2 = subprocess.Popen(args2, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
   
