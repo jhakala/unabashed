@@ -6,6 +6,13 @@ from ansi2html import ansi2html
 from logHtml import *
 
 # John Hakala, 2/25/17
+# this pyCGI script looks at log copy (symlink) from logCopy.py
+# then, it runs tail to grab a certain number of liens from the log copy's end
+# then, it feeds it to Handsaw, which spits back an ansi-formatted version of the logs
+# it uses ansi2html to convert this into html format
+# then it changes the colors so they're not so ugly
+# and finally it spits out an html page to stdout (which apache grabs and serves over the web)
+# some chunks of html are gotten from the helper functions in logHtml.py
 
 def getLastLogMessages(lines, filter):
   logCopyName = "~johakala/logCopyer/log_copy.xml"

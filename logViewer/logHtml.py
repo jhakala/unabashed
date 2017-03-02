@@ -1,3 +1,6 @@
+# helper functions to spit out chunks of html for viewLogs.py
+# John Hakala 3/2/2017
+
 def getHeader():
   header = """
 <html>

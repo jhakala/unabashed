@@ -1,5 +1,6 @@
 from os import symlink, remove
 import errno
+# copied over from https://github.com/jhakala/Vg
 def force_symlink(target, linkName):
     try:
         symlink(target, linkName)
