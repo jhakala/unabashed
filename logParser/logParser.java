@@ -103,15 +103,18 @@ public class logParser extends DefaultHandler {
             // instead they show up just as a port on a host
             // for some of these logs though though, CDATA section of the message has info
             appType = "unknown";
-            if (logEventTmp.message != null) {
-              if (logEventTmp.message.split("CDATA\\[")[1].contains("profile")) {
+            if (logEventTmp.message != null && logEventTmp.message.contains(" ") ) {
+              if (logEventTmp.message.split(" ")[1].contains("profile")) {
                 // the messages about loading the profile don't identify themselves much at all
                 appType = "xdaq profile loading message";
               }
               else {
                 // most of the rest have the code's name at the beginning of the CDATA
-                appType = "xdaq startup message: " + logEventTmp.message.split("CDATA\\[")[1].split(" ")[0].split("]]")[0];
+                appType = "xdaq startup message: " + logEventTmp.message.split(" ")[0].split("]]")[0];
               }
+            }
+            else if (logEventTmp.message != null) {
+              appType = "xdaq startup message: " + logEventTmp.message;
             }
           }
         }
@@ -119,6 +122,9 @@ public class logParser extends DefaultHandler {
         logsMap.putIfAbsent(appType, 0);
         // keep track of how many logs by that app type are found
         logsMap.put(appType, logsMap.get(appType) + 1);
+      }
+      else if (element.equals("log4j:message")){
+        logEventTmp.message = curCharValue.toString();
       }
     }
 
