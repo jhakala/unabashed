@@ -122,39 +122,39 @@ public class logParser extends DefaultHandler {
       }
     }
 
-    // manually build a JSON map -- Gson doesn't come installed everywhere
-    public void printMap(){
-      System.out.println("{");
-      Boolean first = true;
-      for (String appKey : logsMap.keySet()) {
-        if (!first) { System.out.print(",\n");}
-        System.out.print('"' + appKey + "\" : " + logsMap.get(appKey).toString());
-        first = false;
-      }
-      System.out.print("\n}");
-      // sends the JSON to stdout
+  // manually build a JSON map -- Gson doesn't come installed everywhere
+  public void printMap(){
+    System.out.println("{");
+    Boolean first = true;
+    for (String appKey : logsMap.keySet()) {
+      if (!first) { System.out.print(",\n");}
+      System.out.print('"' + appKey + "\" : " + logsMap.get(appKey).toString());
+      first = false;
     }
+    System.out.print("\n}");
+    // sends the JSON to stdout
+  }
 
-    public static void main(String[] args) {
-      if (args.length != 1) {
-        System.out.println("Please supply one argument: the input logfile.");
-        System.exit(1);
-      }
-      boolean debugFlag = true;
-      new logParser(args[0]);
+  public static void main(String[] args) {
+    if (args.length != 1) {
+      System.out.println("Please supply one argument: the input logfile.");
+      System.exit(1);
     }
+    boolean debugFlag = true;
+    new logParser(args[0]);
+  }
 
-    private static String nodeToString(Node node) {
-      // taken from 
-      // https://stackoverflow.com/questions/6534182/java-geting-all-content-of-a-xml-node-as-string
-      StringWriter sw = new StringWriter();
-      try {
-        Transformer t = TransformerFactory.newInstance().newTransformer();
-        t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        t.transform(new DOMSource(node), new StreamResult(sw));
-      } catch (TransformerException te) {
-        System.out.println("nodeToString Transformer Exception");
-      }
-      return sw.toString();
+  private static String nodeToString(Node node) {
+    // taken from 
+    // https://stackoverflow.com/questions/6534182/java-geting-all-content-of-a-xml-node-as-string
+    StringWriter sw = new StringWriter();
+    try {
+      Transformer t = TransformerFactory.newInstance().newTransformer();
+      t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+      t.transform(new DOMSource(node), new StreamResult(sw));
+    } catch (TransformerException te) {
+      System.out.println("nodeToString Transformer Exception");
     }
-    }
+    return sw.toString();
+  }
+}
