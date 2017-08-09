@@ -92,7 +92,7 @@ public class logParser {
           }
         }
         // fill all the app types into a hashmap
-        logsMap.putIfAbsent(appType, 1);
+        logsMap.putIfAbsent(appType, 0);
         // keep track of how many logs by that app type are found
         logsMap.put(appType, logsMap.get(appType) + 1);
       }
