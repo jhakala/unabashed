@@ -4,6 +4,7 @@ import json
 from magicXMLsax import makeJSON
 from pprint import pprint
 
+# taken from https://altair-viz.github.io/recipes.html#plot-recipes/population
 def heatmap(data, row, column, color, cellsize=(30, 15)):
    """Create an Altair Heat-Map
 
@@ -38,6 +39,7 @@ if __name__ == "__main__":
     depthDict = [channel for channel in jsonDict if int(channel["depth"]) == depth]
     if depth == 1:
       pprint(depthDict)
+    # TODO probably can have pandas directly read the dict instead of going back to JSON first
     depthData = read_json(json.dumps(depthDict))
     plot = heatmap(depthData, row="iphi", column="ieta", color="delay")
     plot.savechart("testAltair_depth%i.json" % depth, "json")
