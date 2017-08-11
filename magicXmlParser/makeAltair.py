@@ -34,12 +34,12 @@ if __name__ == "__main__":
     jsonDict = json.load(inFile)
   print jsonDict
 
-  for depth in range(0,8):
+  for depth in range(1,10):
     depthDict = [channel for channel in jsonDict if int(channel["depth"]) == depth]
     if depth == 1:
       pprint(depthDict)
     depthData = read_json(json.dumps(depthDict))
     plot = heatmap(depthData, row="iphi", column="ieta", color="delay")
-    plot.savechart("testAltair_depth%i.html" % depth, "html")
+    plot.savechart("testAltair_depth%i.json" % depth, "json")
   
  
