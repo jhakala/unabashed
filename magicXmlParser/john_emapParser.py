@@ -31,14 +31,16 @@ class emapper:
         matches.append(channel)
     return matches
      
+  def listAll(self):
+    return self.search({})
+
 
 if __name__ == "__main__":
   emap = emapper("HCALmapHBHEP17_J.txt")
   #emap = emapper("HCALmapHBHElegacy_J.txt")
   emap.parseEmap()
   searchDict = {}
-  searchDict["cr"] =  "34"
-  searchDict["sl"] =  "12"
-  searchDict["uhtr_fib"] =  "2"
-  searchDict["fib_ch"] =  "5"
+  searchDict["eta"] = "27"
+  searchDict["phi"] = "63"
+  searchDict["depth"] = "1"
   pprint(emap.search(searchDict))
