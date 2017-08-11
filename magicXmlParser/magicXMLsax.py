@@ -1,4 +1,5 @@
 from xml.sax import saxutils, handler, make_parser
+from os import path, makedirs
 from copy import deepcopy
 
 # John Hakala 8/10/17
@@ -32,13 +33,14 @@ class CfgBrick():
 # This class is a special implementation of a CfgBrick that specializes it to parsing RBX delay cfgBricks
 # TODO a class like this will be needed for each kind of magicXML
 class CfgBrickDelay(CfgBrick):
-  def __init__(self):
+  def __init__(self, outFileName):
     print "RBX Delays"
     CfgBrick.__init__(self)
     self.rbx = "test"
     self.qieDelays = {}
     self.tmpDict = {}
     self.tmpKinds = ["RBX", "Data"]
+    self.outFileName = outFileName
 
   def startElement(self, elementName, attributes):
     if elementName == "Parameter":
@@ -90,8 +92,11 @@ class CfgBrickDelay(CfgBrick):
           del channel[key]
     import json
     # TODO make this configurable
-    with open("rbxDelays_tmp.json", "w") as outFile:
-      json.dump(emap.emap, outFile)
+    outputDir = "outputJSONs"
+    if not (path.exists(outputDir)):
+      makedirs(outputDir)
+    with open(path.join(outputDir, self.outFileName), "w") as outFile:
+     json.dump(emap.emap, outFile)
       
     
   
@@ -99,10 +104,11 @@ class CfgBrickDelay(CfgBrick):
 # to parse different types of magic xmls, you endow its' "self.brick" member object
 # which will direct it to pull the particular stuff of interest from the xml
 class magicSAX(handler.ContentHandler):
-  def __init__(self):
+  def __init__(self, outFileName):
     self.brick = CfgBrick()
     handler.ContentHandler.__init__(self)
     self.outDict = {}
+    self.outFileName = outFileName
 
     ## TODO this will need to be changed for all different kinds of magicXMLs
     self.validInfoTypes = ["DELAY"]
@@ -116,7 +122,7 @@ class magicSAX(handler.ContentHandler):
 
     ## TODO this will need to be changed for all different kinds of magicXMLs
     if infotype == "DELAY":
-      self.brick = CfgBrickDelay()
+      self.brick = CfgBrickDelay(self.outFileName)
 
   def startElement(self, elementName, attributes):
     self.brick.startElement(elementName, attributes)
@@ -142,7 +148,7 @@ class magicSAX(handler.ContentHandler):
 
     
 # function to call if you want to dump a json from another python script (e.g. makeAltair.py)
-def makeJSON(inputName):
+def makeJSON(inputName, outFileName):
   from os.path import isfile, isdir
   if isfile(inputName):
     inFile = inputName
@@ -154,17 +160,7 @@ def makeJSON(inputName):
     print "the input specified does not seem to be a valid file or directory:", inputName
      
   saxParser = make_parser()
-  saxParser.setContentHandler(magicSAX())
+  print "outFileName is:", outFileName
+  saxParser.setContentHandler(magicSAX(outFileName))
   saxParser.parse(inFile)
 
-if __name__ == "__main__":
-  
-  from argparse import ArgumentParser
-  argParser = ArgumentParser(description = "parses magic xmls and creates JSON representations")
-  argParser.add_argument("--inXML" , dest="inXML" ,  help = "input filename"        )
-  args = argParser.parse_args()
-
-  if not args.inXML:
-    print "Please pick one and only one input file or one input directory"
-    exit(1)
-  makeJSON(args.inXML)

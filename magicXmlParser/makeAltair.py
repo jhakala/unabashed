@@ -1,3 +1,4 @@
+from os import path
 from pandas import read_json
 from altair import Row, Column, Chart, Text, load_dataset
 import json 
@@ -28,8 +29,17 @@ def heatmap(data, row, column, color, cellsize=(30, 15)):
         )
 
 if __name__ == "__main__":
-  from sys import argv
-  makeJSON(argv[1])
+  
+  from argparse import ArgumentParser
+  argParser = ArgumentParser(description = "parses magic xmls and creates JSON representations")
+  argParser.add_argument("--inXML" , dest="inXML" ,  help = "input filename"        )
+  args = argParser.parse_args()
+
+  if not args.inXML:
+    print "Please pick one and only one input file or one input directory"
+    exit(1)
+  outJSONname = "rbxDelays_%s"%path.basename(args.inXML.replace(".xml", ".json"))
+  makeJSON(args.inXML, outJSONname)
   jsonName = "rbxDelays_tmp.json"
   with open(jsonName) as inFile:
     jsonDict = json.load(inFile)
