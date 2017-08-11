@@ -72,7 +72,7 @@ class CfgBrickDelay(CfgBrick):
     emap.parseEmap()
 
     # TODO this could be moved to a function that isn't specific for RBX delays
-    # right now this is just where we still the json formatting stuff
+    # right now this is just where we stick the json formatting stuff
     for channel in emap.listAll():
       foundChannel = False
       if channel["RBX"] in self.qieDelays.keys():
