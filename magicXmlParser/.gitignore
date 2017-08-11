@@ -1,0 +1,6 @@
+outputHTML
+outputPlots
+outputJSONs
+*.pyc
+HCALmapHBHEP17_*.txt
+magicXMLs
