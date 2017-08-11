@@ -36,14 +36,14 @@ if __name__ == "__main__":
                          help = "either 'single' or 'diff"                   )
   argParser.add_argument("--inXML" , dest="inXML"  ,  
                          help = "for single mode: input filename"            )
-  argParser.add_argument("--new"   , dest="newXML" ,  
+  argParser.add_argument("--new"   , dest="new" ,  
                          help = "for diff mode: new input xml filename"      )
-  argParser.add_argument("--old"   , dest="oldXML" ,  
+  argParser.add_argument("--old"   , dest="old" ,  
                          help = "for diff mode: old input xml filename"      )
   args = argParser.parse_args()
 
-  if args.mode == "single" or args.new or args.old:
-    if not args.inXML:
+  if args.mode == "single":
+    if not args.inXML or args.new or args.old:
       print "Please pick one and only one input file  with the --inXML option"
       exit(1)
     else:
@@ -60,30 +60,39 @@ if __name__ == "__main__":
   if not path.exists(outPlotsDir):
     makedirs(outPlotsDir)
   outPlotNames = []
-  first = False
+  first = True
   for inFileName in inFileNames:
-    outJSONnames.append("rbxDelays_%s"%path.basename(args.inXML.replace(".xml", ".json")))
+    outJSONnames.append("rbxDelays_%s"%path.basename(inFileName.replace(".xml", ".json")))
     outPlotNames.append("plot_{}".format(outJSONnames[-1].replace(".json", "")))
-    makeJSON(args.inXML, outJSONnames[-1])
+    makeJSON(inFileName, outJSONnames[-1])
 
-    if args.mode == "single":
-      print "making visualization of", inFileName
-      with open(path.join("outputJSONs", outJSONnames[0])) as inFile:
-        jsonDict = json.load(inFile)
+  if args.mode == "single":
+    print "making visualization of", inFileName
+    plotName = outJSONnames[0]
 
-      for depth in range(1,10):
-        depthDict = [channel for channel in jsonDict if int(channel["depth"]) == depth]
-        if depth == 1:
-          pprint(depthDict)
-        # TODO probably can have pandas directly read the dict instead of going back to JSON first
-        depthData = read_json(json.dumps(depthDict))
-        plot = heatmap(depthData, row="iphi", column="ieta", color="delay")
-        plot.savechart(path.join(outPlotsDir, "{}_depth{}.json".format(outPlotNames[-1], depth)), "json")
+  elif args.mode == "diff":
+    with open(path.join("outputJSONs", outJSONnames[0])) as inFile:
+      old = json.load(inFile)
+    with open(path.join("outputJSONs", outJSONnames[1])) as inFile:
+      new = json.load(inFile)
+    for channelNew in new: 
+      for channelOld in old:
+        if channelNew["ieta"] == channelOld["ieta"] and channelNew["iphi"] == channelOld ["iphi"] and channelNew["depth"] == channelOld["depth"]:
+          channelNew["delay"] = str(int(channelNew["delay"]) - int(channelOld["delay"]))
+    outDiffName = 'diff_{}_{}'.format(outJSONnames[0].replace(".json",""), outJSONnames[1])
+    with open(path.join("outputJSONs", outDiffName), "w") as outFile:
+      json.dump(new, outFile)
+    plotName = outDiffName
+  else:
+    print "invalid mode '{0}': must be either 'diff' or 'single'".format(args.mode)
+    exit(1)
+    
+  with open(path.join("outputJSONs", plotName)) as inFile:
+    jsonDict = json.load(inFile)
 
-    elif args.mode == "diff":
-      if first:
-        print "making visualization diff between {0} and {1}".format(inFileNames[0], inFileNames[1])
-        first = False
-    else:
-      print "invalid mode '{0}': must be either 'diff' or 'single'".format(args.mode)
-      exit(1)
+  for depth in range(1,10):
+    depthDict = [channel for channel in jsonDict if int(channel["depth"]) == depth]
+    # TODO probably can have pandas directly read the dict instead of going back to JSON first
+    depthData = read_json(json.dumps(depthDict))
+    plot = heatmap(depthData, row="iphi", column="ieta", color="delay")
+    plot.savechart(path.join(outPlotsDir, "{}_depth{}.json".format(plotName.replace(".json", ""), depth)), "json")
