@@ -1,9 +1,10 @@
 from os import path, makedirs
+from glob import glob
 from pandas import read_json
 from altair import Row, Column, Chart, Text, load_dataset
 import json 
 from magicXMLsax import makeJSON
-from pprint import pprint
+from magicXMLutils import *
 
 # taken from https://altair-viz.github.io/recipes.html#plot-recipes/population
 def heatmap(data, row, column, color, cellsize=(30, 15)):
@@ -44,17 +45,14 @@ if __name__ == "__main__":
 
   if args.mode == "single":
     if not args.inXML or args.new or args.old:
-      print "Please pick one and only one input file  with the --inXML option"
-      exit(1)
+      error("Please pick one and only one input file  with the --inXML option")
     else:
       inFileNames = [args.inXML]
   if args.mode == "diff":
       if  not (args.new and args.old) or args.inXML:
-        print "Please pick one and only one new file and one and only one old file  with the --new and --old options"
-        exit(1)
+        error("Please pick one and only one new file and one and only one old file  with the --new and --old options")
       else:
         inFileNames = [args.old, args.new]
-  print inFileNames
   outJSONnames = []
   outPlotsDir = "outputPlots"
   if not path.exists(outPlotsDir):
@@ -62,12 +60,30 @@ if __name__ == "__main__":
   outPlotNames = []
   first = True
   for inFileName in inFileNames:
-    outJSONnames.append("rbxDelays_%s"%path.basename(inFileName.replace(".xml", ".json")))
-    outPlotNames.append("plot_{}".format(outJSONnames[-1].replace(".json", "")))
+    if not path.isdir(inFileName):
+      outJSONnames.append(path.basename(inFileName.replace(".xml", ".json")))
+      outPlotNames.append("plot_{}".format(outJSONnames[-1].replace(".json", "")))
+    else:
+      # TODO HACK HACK
+      for inFile in glob("{}/*.xml".format(inFileName)):
+        outJSONnames.append("ledAmplitudes_" + path.basename(inFile).replace(".xml", ".json"))
     makeJSON(inFileName, outJSONnames[-1])
+ 
+    if path.isdir(inFileName):
+      fullList = []
+      for outJSON in outJSONnames: 
+        with open(path.join("outputJSONs", outJSON)) as partialListFile:
+          partialList = json.load(partialListFile)
+          for channel in partialList:
+            channel["eta"] = str(int(channel["side"])*int(channel["eta"]))
+          fullList.extend(partialList)
+      with open(path.join("outputJSONs", "tmp_fullJSON.json"), "w") as outFullJSON:
+        json.dump(fullList, outFullJSON)
+        outJSONnames = [path.basename(outFullJSON.name)]
+        outPlotNames = ["plot_{}".format(outFullJSON.name.replace(".json", ""))]
 
   if args.mode == "single":
-    print "making visualization of", inFileName
+    info("making visualization of " + inFileName)
     plotName = outJSONnames[0]
 
   elif args.mode == "diff":
@@ -84,7 +100,7 @@ if __name__ == "__main__":
       json.dump(new, outFile)
     plotName = outDiffName
   else:
-    print "invalid mode '{0}': must be either 'diff' or 'single'".format(args.mode)
+    error("invalid mode '{0}': must be either 'diff' or 'single'".format(args.mode))
     exit(1)
     
   with open(path.join("outputJSONs", plotName)) as inFile:
@@ -94,5 +110,5 @@ if __name__ == "__main__":
     depthDict = [channel for channel in jsonDict if int(channel["depth"]) == depth]
     # TODO probably can have pandas directly read the dict instead of going back to JSON first
     depthData = read_json(json.dumps(depthDict))
-    plot = heatmap(depthData, row="iphi", column="ieta", color="delay")
+    plot = heatmap(depthData, row="phi", column="eta", color="amplitude")
     plot.savechart(path.join(outPlotsDir, "{}_depth{}.json".format(plotName.replace(".json", ""), depth)), "json")

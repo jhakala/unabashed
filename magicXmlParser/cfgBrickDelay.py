@@ -12,7 +12,8 @@ class CfgBrickDelay(CfgBrick):
     self.qieDelays = {}
     self.tmpDict = {}
     self.tmpKinds = ["RBX", "Data"]
-    self.outFileName = outFileName
+    self.resultName = "rbxDelays"
+    self.outFileName = self.resultName + "_" + outFileName
 
   def startElement(self, elementName, attributes):
     if elementName == "Parameter":

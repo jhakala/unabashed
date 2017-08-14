@@ -12,6 +12,8 @@ class CfgBrick():
     self.tmpContent = ""
     self.tmpKind = "other"
     self.tmpGen = "other"
+    self.resultName = "test"
+    self.outFileName = "blah"
 
   def clearContent(self):
     self.tmpContent = ""
@@ -30,13 +32,15 @@ class CfgBrick():
     self.tmpContent = innerText
 
   def endElement(self, elementName):
-    pass
+    if self.tmpKind == "RBX":
+      self.rbx = self.tmpContent
 
   def endDocument(self):
     pass
 
-  def formatJson(self, keepKey, emap):
-    keepKeys = ["ieta", "iphi", "depth", keepKey]
+  def formatJson(self, keepKey, emap, outFileName):
+    #keepKeys = ["eta", "phi", "depth", keepKey]
+    keepKeys = ["side", "eta", "phi", "depth", keepKey]
     for channel in emap:
       for key in channel.keys():
         if not key in keepKeys:
@@ -47,7 +51,7 @@ class CfgBrick():
     outputDir = "outputJSONs"
     if not (path.exists(outputDir)):
       makedirs(outputDir)
-    with open(path.join(outputDir, self.outFileName), "w") as outFile:
+    with open(path.join(outputDir, path.basename(outFileName)), "w") as outFile:
      json.dump(emap, outFile)
   
 # this is meant to be a generic sax parser for all the different kind of magic xmls
@@ -61,7 +65,7 @@ class magicSAX(handler.ContentHandler):
     self.outFileName = outFileName
 
     ## TODO this will need to be changed for all different kinds of magicXMLs
-    self.validInfoTypes = ["DELAY"]
+    self.validInfoTypes = ["DELAY", "LED"]
   
   # this factory is used so that the handler can inherit specific 
   def CfgBrickFactory(self, infotype):
@@ -72,6 +76,11 @@ class magicSAX(handler.ContentHandler):
     if infotype == "DELAY":
       from cfgBrickDelay import CfgBrickDelay
       self.brick = CfgBrickDelay(self.outFileName)
+    elif infotype == "LED":
+      from cfgBrickLEDamp import CfgBrickLEDamp
+      self.brick = CfgBrickLEDamp(self.outFileName, self.brick.rbx)
+    else:
+      error("did not find infotype" + infotype)
 
   def startElement(self, elementName, attributes):
     self.brick.startElement(elementName, attributes)
@@ -113,8 +122,7 @@ def makeJSON(inputName, outFileName):
     error("the input specified does not seem to be a valid file or directory: " + inputName)
      
   saxParser = make_parser()
-  info("outFileName is: " + outFileName)
-  saxParser.setContentHandler(magicSAX(outFileName))
   for inFile in inFiles:
+    saxParser.setContentHandler(magicSAX(outFileName + inFile))
     saxParser.parse(inFile)
 
