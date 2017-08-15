@@ -53,7 +53,7 @@ class CfgBrick():
     with open(path.join(outputDir, path.basename(outFileName)), "w") as outFile:
      json.dump(emap, outFile)
 
-  def getOutJSONname():
+  def getOutJSONinfo(self):
     pass
   
 # this is meant to be a generic sax parser for all the different kind of magic xmls
@@ -66,12 +66,13 @@ class magicSAX(handler.ContentHandler):
     self.outDict = {}
     self.inFileName = inFileName
     self.outJSONname = "none"
+    self.outVar = "none"
 
     ## TODO this will need to be changed for all different kinds of magicXMLs
     self.validInfoTypes = ["DELAY", "LED"]
   
-  def setOutJSONname(self):
-    self.outJSONname = self.brick.getOutJSONname()
+  def setOutJSONinfo(self):
+    (self.outJSONname, self.outVar) = self.brick.getOutJSONinfo()
 
   # this factory is used so that the handler can inherit specific 
   def CfgBrickFactory(self, infotype):
@@ -109,9 +110,9 @@ class magicSAX(handler.ContentHandler):
     else:
       self.brick.endElement(elementName)
     self.brick.tmpKind = "other"
-    self.setOutJSONname()
 
   def endDocument(self):
+    self.setOutJSONinfo()
     self.brick.endDocument()
 
 # function to call if you want to dump a json from another python script (e.g. makeAltair.py)
@@ -127,9 +128,11 @@ def makeJSON(inputName):
   else:
     error("the input specified does not seem to be a valid file or directory: " + inputName)
      
+  outJSONnames = []
   saxParser = make_parser()
   for inFile in inFiles:
     saxParser.setContentHandler(magicSAX(inFile))
     saxParser.parse(inFile)
-    return saxParser.getContentHandler().outJSONname
+    outJSONnames.append(saxParser.getContentHandler().outJSONname)
+  return (outJSONnames, saxParser.getContentHandler().outVar)
 

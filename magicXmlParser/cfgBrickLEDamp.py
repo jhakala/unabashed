@@ -14,6 +14,7 @@ class CfgBrickLEDamp(CfgBrick):
     self.rbx = rbx
     self.tmpKinds = ["RBX", "amplitude"]
     self.resultName = "ledAmplitudes"
+    self.outVar = "amplitude"
     self.outFileName = self.resultName + "_" + basename(inFileName.replace(".xml", ".json"))
     if self.rbx != "test":
       self.ledAmps[self.rbx] = []
@@ -60,9 +61,9 @@ class CfgBrickLEDamp(CfgBrick):
       if not foundChannel:
         emap.emap.remove(channel)
 
-    keepKey = "amplitude"
+    keepKey = self.outVar
     info ("self.outFileName: " + self.outFileName) 
     self.formatJson(keepKey, emap.emap, self.outFileName)
 
-  def getOutJSONname(self):
-    return self.outFileName
+  def getOutJSONinfo(self):
+    return (self.outFileName, self.outVar)

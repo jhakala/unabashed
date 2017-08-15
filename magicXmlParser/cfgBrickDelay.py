@@ -14,6 +14,7 @@ class CfgBrickDelay(CfgBrick):
     self.tmpDict = {}
     self.tmpKinds = ["RBX", "Data"]
     self.resultName = "rbxDelays"
+    self.outVar = "delay"
     self.outFileName = self.resultName + "_" + basename(inFileName.replace(".xml", ".json"))
 
   def startElement(self, elementName, attributes):
@@ -57,8 +58,7 @@ class CfgBrickDelay(CfgBrick):
       if not foundChannel:
         emap.emap.remove(channel)
 
-    keepKey = "delay"
-    self.formatJson(keepKey, emap.emap, self.outFileName)
+    self.formatJson(self.outVar, emap.emap, self.outFileName)
 
-  def getOutJSONname(self):
-    return self.outFileName
+  def getOutJSONinfo(self):
+    return (self.outFileName, self.outVar)
