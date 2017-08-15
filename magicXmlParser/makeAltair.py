@@ -57,17 +57,16 @@ if __name__ == "__main__":
   outPlotsDir = "outputPlots"
   if not path.exists(outPlotsDir):
     makedirs(outPlotsDir)
-  outPlotNames = []
   first = True
   for inFileName in inFileNames:
-    if not path.isdir(inFileName):
-      outJSONnames.append(path.basename(inFileName.replace(".xml", ".json")))
-      outPlotNames.append("plot_{}".format(outJSONnames[-1].replace(".json", "")))
-    else:
-      # TODO HACK HACK
-      for inFile in glob("{}/*.xml".format(inFileName)):
-        outJSONnames.append("ledAmplitudes_" + path.basename(inFile).replace(".xml", ".json"))
-    makeJSON(inFileName, outJSONnames[-1])
+    #if not path.isdir(inFileName):
+    #  #outJSONnames.append(path.basename(inFileName.replace(".xml", ".json")))
+    #  outPlotNames.append("plot_{}".format(path.basename(inFileName.replace(".xml", "")))
+    #else:
+    #  # TODO HACK HACK
+    #  for inFile in glob("{}/*.xml".format(inFileName)):
+    #    #outJSONnames.append("ledAmplitudes_" + path.basename(inFile).replace(".xml", ".json"))
+    outJSONnames.append(makeJSON(inFileName))
  
     if path.isdir(inFileName):
       fullList = []
@@ -93,7 +92,8 @@ if __name__ == "__main__":
       new = json.load(inFile)
     for channelNew in new: 
       for channelOld in old:
-        if channelNew["ieta"] == channelOld["ieta"] and channelNew["iphi"] == channelOld ["iphi"] and channelNew["depth"] == channelOld["depth"]:
+        #if channelNew["ieta"] == channelOld["ieta"] and channelNew["iphi"] == channelOld ["iphi"] and channelNew["depth"] == channelOld["depth"]:
+        if channelNew["eta"] == channelOld["eta"] and channelNew["phi"] == channelOld ["phi"] and channelNew["depth"] == channelOld["depth"]:
           channelNew["delay"] = str(int(channelNew["delay"]) - int(channelOld["delay"]))
     outDiffName = 'diff_{}_{}'.format(outJSONnames[0].replace(".json",""), outJSONnames[1])
     with open(path.join("outputJSONs", outDiffName), "w") as outFile:
@@ -110,5 +110,6 @@ if __name__ == "__main__":
     depthDict = [channel for channel in jsonDict if int(channel["depth"]) == depth]
     # TODO probably can have pandas directly read the dict instead of going back to JSON first
     depthData = read_json(json.dumps(depthDict))
-    plot = heatmap(depthData, row="phi", column="eta", color="amplitude")
+    #plot = heatmap(depthData, row="phi", column="eta", color="amplitude")
+    plot = heatmap(depthData, row="phi", column="eta", color="delay")
     plot.savechart(path.join(outPlotsDir, "{}_depth{}.json".format(plotName.replace(".json", ""), depth)), "json")

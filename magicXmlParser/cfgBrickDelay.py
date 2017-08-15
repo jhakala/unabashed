@@ -1,11 +1,12 @@
 from copy import deepcopy
+from os.path import basename
 from magicXMLsax import CfgBrick
 from magicXMLutils import *
 
 # This class is a special implementation of a CfgBrick that specializes it to parsing RBX delay cfgBricks
 # TODO a class like this will be needed for each kind of magicXML
 class CfgBrickDelay(CfgBrick):
-  def __init__(self, outFileName):
+  def __init__(self, inFileName):
     info("Parsing magic xml of type: RBX Delays")
     CfgBrick.__init__(self)
     self.rbx = "test"
@@ -13,7 +14,7 @@ class CfgBrickDelay(CfgBrick):
     self.tmpDict = {}
     self.tmpKinds = ["RBX", "Data"]
     self.resultName = "rbxDelays"
-    self.outFileName = self.resultName + "_" + outFileName
+    self.outFileName = self.resultName + "_" + basename(inFileName.replace(".xml", ".json"))
 
   def startElement(self, elementName, attributes):
     if elementName == "Parameter":
@@ -57,4 +58,7 @@ class CfgBrickDelay(CfgBrick):
         emap.emap.remove(channel)
 
     keepKey = "delay"
-    self.formatJson(keepKey, emap.emap)
+    self.formatJson(keepKey, emap.emap, self.outFileName)
+
+  def getOutJSONname(self):
+    return self.outFileName

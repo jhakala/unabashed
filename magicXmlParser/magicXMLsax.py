@@ -11,7 +11,6 @@ class CfgBrick():
     self.rbx = "test"
     self.tmpContent = ""
     self.tmpKind = "other"
-    self.tmpGen = "other"
     self.resultName = "test"
     self.outFileName = "blah"
 
@@ -53,20 +52,27 @@ class CfgBrick():
       makedirs(outputDir)
     with open(path.join(outputDir, path.basename(outFileName)), "w") as outFile:
      json.dump(emap, outFile)
+
+  def getOutJSONname():
+    pass
   
 # this is meant to be a generic sax parser for all the different kind of magic xmls
 # to parse different types of magic xmls, you endow its' "self.brick" member object
 # which will direct it to pull the particular stuff of interest from the xml
 class magicSAX(handler.ContentHandler):
-  def __init__(self, outFileName):
+  def __init__(self, inFileName):
     self.brick = CfgBrick()
     handler.ContentHandler.__init__(self)
     self.outDict = {}
-    self.outFileName = outFileName
+    self.inFileName = inFileName
+    self.outJSONname = "none"
 
     ## TODO this will need to be changed for all different kinds of magicXMLs
     self.validInfoTypes = ["DELAY", "LED"]
   
+  def setOutJSONname(self):
+    self.outJSONname = self.brick.getOutJSONname()
+
   # this factory is used so that the handler can inherit specific 
   def CfgBrickFactory(self, infotype):
     if not infotype in self.validInfoTypes:
@@ -75,10 +81,10 @@ class magicSAX(handler.ContentHandler):
     ## TODO this will need to be changed for all different kinds of magicXMLs
     if infotype == "DELAY":
       from cfgBrickDelay import CfgBrickDelay
-      self.brick = CfgBrickDelay(self.outFileName)
+      self.brick = CfgBrickDelay(self.inFileName)
     elif infotype == "LED":
       from cfgBrickLEDamp import CfgBrickLEDamp
-      self.brick = CfgBrickLEDamp(self.outFileName, self.brick.rbx)
+      self.brick = CfgBrickLEDamp(self.inFileName, self.brick.rbx)
     else:
       error("did not find infotype" + infotype)
 
@@ -103,13 +109,13 @@ class magicSAX(handler.ContentHandler):
     else:
       self.brick.endElement(elementName)
     self.brick.tmpKind = "other"
+    self.setOutJSONname()
 
   def endDocument(self):
     self.brick.endDocument()
 
-    
 # function to call if you want to dump a json from another python script (e.g. makeAltair.py)
-def makeJSON(inputName, outFileName):
+def makeJSON(inputName):
   from os.path import isfile, isdir
   if isfile(inputName):
     inFiles = [inputName]
@@ -123,6 +129,7 @@ def makeJSON(inputName, outFileName):
      
   saxParser = make_parser()
   for inFile in inFiles:
-    saxParser.setContentHandler(magicSAX(outFileName + inFile))
+    saxParser.setContentHandler(magicSAX(inFile))
     saxParser.parse(inFile)
+    return saxParser.getContentHandler().outJSONname
 

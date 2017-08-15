@@ -6,7 +6,7 @@ from magicXMLutils import *
 # This class is a special implementation of a CfgBrick that specializes it to parsing LED amplitude cfgBricks
 # TODO a class like this will be needed for each kind of magicXML
 class CfgBrickLEDamp(CfgBrick):
-  def __init__(self, outFileName, rbx):
+  def __init__(self, inFileName, rbx):
     info("Parsing magic xml of type: LED amplitudes")
     CfgBrick.__init__(self)
     self.ledAmps = {}
@@ -14,7 +14,7 @@ class CfgBrickLEDamp(CfgBrick):
     self.rbx = rbx
     self.tmpKinds = ["RBX", "amplitude"]
     self.resultName = "ledAmplitudes"
-    self.outFileName = self.resultName + "_" + basename(outFileName.replace(".xml", ".json"))
+    self.outFileName = self.resultName + "_" + basename(inFileName.replace(".xml", ".json"))
     if self.rbx != "test":
       self.ledAmps[self.rbx] = []
 
@@ -63,3 +63,6 @@ class CfgBrickLEDamp(CfgBrick):
     keepKey = "amplitude"
     info ("self.outFileName: " + self.outFileName) 
     self.formatJson(keepKey, emap.emap, self.outFileName)
+
+  def getOutJSONname(self):
+    return self.outFileName
