@@ -7,7 +7,7 @@ from magicXMLutils import *
 # TODO a class like this will be needed for each kind of magicXML
 class CfgBrickLEDamp(CfgBrick):
   def __init__(self, inFileName, rbx):
-    info("Parsing magic xml of type: LED amplitudes")
+    info("Parsing magic xml {} of type: LED amplitudes".format(inFileName))
     CfgBrick.__init__(self)
     self.ledAmps = {}
     self.tmpDict = {}
@@ -62,7 +62,6 @@ class CfgBrickLEDamp(CfgBrick):
         emap.emap.remove(channel)
 
     keepKey = self.outVar
-    info ("self.outFileName: " + self.outFileName) 
     self.formatJson(keepKey, emap.emap, self.outFileName)
 
   def getOutJSONinfo(self):

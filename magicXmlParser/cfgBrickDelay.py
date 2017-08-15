@@ -7,7 +7,7 @@ from magicXMLutils import *
 # TODO a class like this will be needed for each kind of magicXML
 class CfgBrickDelay(CfgBrick):
   def __init__(self, inFileName):
-    info("Parsing magic xml of type: RBX Delays")
+    info("Parsing magic xml {} of type: RBX Delays".format(inFileName))
     CfgBrick.__init__(self)
     self.rbx = "test"
     self.qieDelays = {}
