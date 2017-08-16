@@ -12,7 +12,8 @@ class CfgBrickLEDamp(CfgBrick):
     self.ledAmps = {}
     self.tmpDict = {}
     self.rbx = rbx
-    self.tmpKinds = ["RBX", "amplitude"]
+    self.tmpFlag = ""
+    self.tmpFlags = ["RBX", "amplitude"]
     self.resultName = "ledAmplitudes"
     self.outVar = "amplitude"
     self.outFileName = self.resultName + "_" + basename(inFileName.replace(".xml", ".json"))
@@ -20,29 +21,34 @@ class CfgBrickLEDamp(CfgBrick):
       self.ledAmps[self.rbx] = []
 
   def startElement(self, elementName, attributes):
+    #info("begin element with name " + elementName)
     if elementName == "Parameter":
       if attributes.getValue("name") == "RBX":
-        self.tmpKind = "RBX"
+        self.tmpFlag = "RBX"
     if elementName == "Data":
       if attributes.getValue("item") == "amplitude":
-        self.tmpKind = "amplitude"
+        self.tmpFlag = "amplitude"
     
 
   def contentFiller(self, innerText):
-    if self.tmpKind in self.tmpKinds:
+    if self.tmpFlag in self.tmpFlags:
       self.tmpContent = innerText
+      #info("tmpContent set to: "  + self.tmpContent)
     
   def endElement(self, elementName):
-    if self.tmpKind == "RBX":
-      self.rbx = self.tmpContent
-      self.ledAmps[self.rbx]=[]
-      self.clearContent()
+    #info("end element with name " + elementName)
+    if elementName == "Parameter":
+      if self.tmpFlag == "RBX":
+        self.rbx = self.tmpContent
+        self.ledAmps[self.rbx]=[]
+        #self.clearContent()
 
     elif elementName == "CFGBrick":
       self.tmpDict["amplitude"] = self.tmpContent
       self.clearContent()
       self.ledAmps[self.rbx].append(deepcopy(self.tmpDict))
       self.tmpDict = {}
+    self.tmpFlag = ""
      
       
 

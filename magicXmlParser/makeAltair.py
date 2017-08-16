@@ -5,6 +5,9 @@ from altair import Row, Column, Chart, Text, load_dataset
 import json 
 from magicXMLsax import makeJSON
 from magicXMLutils import *
+from magicXMLhtml import *
+
+# John Hakala 8/16/17
 
 # taken from https://altair-viz.github.io/recipes.html#plot-recipes/population
 def heatmap(data, row, column, color, cellsize=(30, 15)):
@@ -29,8 +32,113 @@ def heatmap(data, row, column, color, cellsize=(30, 15)):
           bandSize=cellsize[1]
         )
 
-if __name__ == "__main__":
+def altairify(mode, args):
+    # creates an altair heatmap from magic xmls
+
+    # validate arguments
+    if mode == "single":
+      if not args["inXML"] or args["new"] or args["old"]:
+        error("Please pick one and only one input file  with the --inXML option")
+      else:
+        inFileNames = [args["inXML"]]
+    if mode == "diff":
+        if  not (args["new"] and args["old"]) or args["inXML"]:
+          error("Please pick one and only one new file and one and only one old file  with the --new and --old options")
+        else:
+          inFileNames = [args["old"], args["new"]]
+
+    # initialize bookkeeping
+    outJSONmap = {}
+    outPlotsDir = "outputPlots"
+    if not path.exists(outPlotsDir):
+      makedirs(outPlotsDir)
+    outJSONvar = ""
+    lastOutJSONvar = ""
+    first = True
+    combinedOutJSONnames = []
+    
+    # process all the xml into JSONs, validate they are consistent, put them into a map
+    info("inFileNames:" + str(inFileNames))
+    for inFileName in inFileNames:
+      (singleOutJSONnames, outJSONvar) = makeJSON(inFileName)
+      #info("singleOutJSONnames" + str(singleOutJSONnames) + "outJSONvar" + str(outJSONvar))
+      if not first and outJSONvar != lastOutJSONvar:
+        error("The input files seem to define inconsistent variables: {} and {}".format(lastOutJSONvar, outJSONvar))
+      outJSONmap[inFileName] = singleOutJSONnames
+      first = False
+      lastOutJSONvar = outJSONvar
+    # at this point the outJSONmap can look like:
+    #     {"inXml1":["outJson1"]}
+    # or  {"indir1":["outJson1.1", "outJson1.2", "outJson1.3"]}
+    # or  {"inXml1":["outJson1"], "inXml2":["outJson2"]}
+    # or  {"indir1":["outJson1.1", "outJson1.2", "outJson1.3"], "inXml2":["outJson2"]} 
+    # or  {"indir1":["outJson1.1", "outJson1.2", "outJson1.3"], "indir2":["outJson2.0", "outJson2.1"]} 
+    # etc.
+
+
+    # now we want to squish it down to one outJson per input
+    info("intermediate JSONs: " + str(outJSONmap))
+    fullOutJSONnames = []
+    for outJSONkey in outJSONmap.keys():
+      if len(outJSONmap[outJSONkey]) == 1:
+        fullOutJSONnames.extend(outJSONmap[outJSONkey])
+      elif len(outJSONmap[outJSONkey]) > 1:
+        combinedList = []
+        for outJSON in outJSONmap[outJSONkey]: 
+          with open(path.join("outputJSONs", outJSON)) as partialListFile:
+            partialList = json.load(partialListFile)
+            combinedList.extend(partialList)
+        with open(path.join("outputJSONs", "fullJSON_{}.json".format(outJSONkey.replace("/", "_"))), "w") as outFullJSON:
+          json.dump(combinedList, outFullJSON)
+          fullOutJSONnames.append(path.basename(outFullJSON.name))
+          outPlotNames = ["plot_{}".format(outFullJSON.name.replace(".json", ""))]
+      else:
+        error("magicXMLsax parser returned {} indicating there was no output file".format(outJSONmap[outJSONkey]))
+       
+
+    if mode == "single":
+      info("making visualization of " + inFileName)
+      plotName = fullOutJSONnames[0]
   
+    elif mode == "diff":
+      with open(path.join("outputJSONs", fullOutJSONnames[0])) as inFileOld:
+        old = json.load(inFileOld)
+      with open(path.join("outputJSONs", fullOutJSONnames[1])) as inFileNew:
+        new = json.load(inFileNew)
+      print outJSONvar
+
+      # match channels and subtract the relevant variable
+      for channelNew in new: 
+        for channelOld in old:
+          if channelNew["eta"] == channelOld["eta"] and channelNew["phi"] == channelOld ["phi"] and channelNew["depth"] == channelOld["depth"] and channelNew["side"] == channelOld["side"]:
+            channelNew[outJSONvar] = str(int(channelNew[outJSONvar]) - int(channelOld[outJSONvar]))
+      outDiffName = 'diff_{}_{}'.format(fullOutJSONnames[0].replace(".json",""), fullOutJSONnames[1])
+      with open(path.join("outputJSONs", outDiffName), "w") as outFile:
+        json.dump(new, outFile)
+      plotName = outDiffName
+
+    else:
+      error("invalid mode '{0}': must be either 'diff' or 'single'".format(mode))
+      exit(1)
+      
+    # the jsons now have all positive etas but separate plus vs. minus with a "side" that's 1 or -1
+    with open(path.join("outputJSONs", plotName)) as inFile:
+      jsonDict = json.load(inFile)
+      for channel in jsonDict:
+        channel["eta"] = str(int(channel["side"])*int(channel["eta"]))
+  
+    # make one plot in ieta/iphi per depth
+    for depth in range(1,10):
+      depthDict = [channel for channel in jsonDict if int(channel["depth"]) == depth]
+      # TODO probably can have pandas directly read the dict instead of going back to JSON first
+      depthData = read_json(json.dumps(depthDict))
+      #plot = heatmap(depthData, row="phi", column="eta", color="amplitude")
+      plot = heatmap(depthData, row="phi", column="eta", color=outJSONvar)
+      plot.savechart(path.join(outPlotsDir, "{}_depth{}.json".format(plotName.replace(".json", ""), depth)), "json")
+
+
+if __name__ == "__main__":
+  # for testing
   from argparse import ArgumentParser
   argParser = ArgumentParser(description = "parses magic xmls and creates JSON representations")
   argParser.add_argument("--mode"  , dest="mode"   ,  
@@ -43,73 +151,6 @@ if __name__ == "__main__":
                          help = "for diff mode: old input xml filename"      )
   args = argParser.parse_args()
 
-  if args.mode == "single":
-    if not args.inXML or args.new or args.old:
-      error("Please pick one and only one input file  with the --inXML option")
-    else:
-      inFileNames = [args.inXML]
-  if args.mode == "diff":
-      if  not (args.new and args.old) or args.inXML:
-        error("Please pick one and only one new file and one and only one old file  with the --new and --old options")
-      else:
-        inFileNames = [args.old, args.new]
-  outJSONnames = []
-  outPlotsDir = "outputPlots"
-  if not path.exists(outPlotsDir):
-    makedirs(outPlotsDir)
-  outJSONvar = ""
-  lastOutJSONvar = ""
-  first = True
-  for inFileName in inFileNames:
-    (singleOutJSONnames, outJSONvar) = makeJSON(inFileName)
-    if not first and outJSONvar != lastOutJSONvar:
-      error("The input files seem to define inconsistent variables: {} and {}".format(lastOutJSONvar, outJSONvar))
-    outJSONnames.extend(singleOutJSONnames)
-    first = False
-    lastOutJSONvar = outJSONvar
- 
-    if path.isdir(inFileName):
-      fullList = []
-      for outJSON in outJSONnames: 
-        with open(path.join("outputJSONs", outJSON)) as partialListFile:
-          partialList = json.load(partialListFile)
-          for channel in partialList:
-            channel["eta"] = str(int(channel["side"])*int(channel["eta"]))
-          fullList.extend(partialList)
-      with open(path.join("outputJSONs", "tmp_fullJSON.json"), "w") as outFullJSON:
-        json.dump(fullList, outFullJSON)
-        outJSONnames = [path.basename(outFullJSON.name)]
-        outPlotNames = ["plot_{}".format(outFullJSON.name.replace(".json", ""))]
+  altairArgs = {"inXML": args.inXML, "old": args.old, "new": args.new}
+  altairify(args.mode, altairArgs)
 
-  if args.mode == "single":
-    info("making visualization of " + inFileName)
-    plotName = outJSONnames[0]
-
-  elif args.mode == "diff":
-    with open(path.join("outputJSONs", outJSONnames[0])) as inFile:
-      old = json.load(inFile)
-    with open(path.join("outputJSONs", outJSONnames[1])) as inFile:
-      new = json.load(inFile)
-    for channelNew in new: 
-      for channelOld in old:
-        #if channelNew["ieta"] == channelOld["ieta"] and channelNew["iphi"] == channelOld ["iphi"] and channelNew["depth"] == channelOld["depth"]:
-        if channelNew["eta"] == channelOld["eta"] and channelNew["phi"] == channelOld ["phi"] and channelNew["depth"] == channelOld["depth"]:
-          channelNew[outJSONvar] = str(int(channelNew[outJSONvar]) - int(channelOld[outJSONvar]))
-    outDiffName = 'diff_{}_{}'.format(outJSONnames[0].replace(".json",""), outJSONnames[1])
-    with open(path.join("outputJSONs", outDiffName), "w") as outFile:
-      json.dump(new, outFile)
-    plotName = outDiffName
-  else:
-    error("invalid mode '{0}': must be either 'diff' or 'single'".format(args.mode))
-    exit(1)
-    
-  with open(path.join("outputJSONs", plotName)) as inFile:
-    jsonDict = json.load(inFile)
-
-  for depth in range(1,10):
-    depthDict = [channel for channel in jsonDict if int(channel["depth"]) == depth]
-    # TODO probably can have pandas directly read the dict instead of going back to JSON first
-    depthData = read_json(json.dumps(depthDict))
-    #plot = heatmap(depthData, row="phi", column="eta", color="amplitude")
-    plot = heatmap(depthData, row="phi", column="eta", color=outJSONvar)
-    plot.savechart(path.join(outPlotsDir, "{}_depth{}.json".format(plotName.replace(".json", ""), depth)), "json")

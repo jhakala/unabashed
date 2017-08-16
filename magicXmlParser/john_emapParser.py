@@ -36,11 +36,10 @@ class emapper:
 
 
 if __name__ == "__main__":
-  emap = emapper("HCALmapHBHEP17_J.txt")
-  #emap = emapper("HCALmapHBHElegacy_J.txt")
+  print "this is a test"
+  #emap = emapper("HCALmapHBHEP17_J.txt")
+  emap = emapper("HCALmapHBHElegacy_J.txt")
   emap.parseEmap()
   searchDict = {}
-  searchDict["eta"] = "27"
-  searchDict["phi"] = "63"
-  searchDict["depth"] = "1"
+  searchDict["RBX"] = "HBP01"
   pprint(emap.search(searchDict))
