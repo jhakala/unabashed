@@ -7,7 +7,6 @@ from magicXMLutils import error, info
 # base class for defining the parser for any kind of magic xml
 class CfgBrick():
   def __init__(self):
-    self.elementType = "CFGBrick"
     self.rbx = "test"
     self.tmpContent = ""
     self.tmpKind = "other"
