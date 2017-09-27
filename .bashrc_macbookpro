@@ -19,6 +19,7 @@ alias tmux="tmux -CC"
 alias omdsRS="~/unabashed/hcalmanager.sh omds &"
 alias p5RS="~/unabashed/hcalmanager.sh p5 &"
 alias 904RS="~/unabashed/hcalmanager.sh 904 &"
+alias fnalRS="~/unabashed/hcalmanager.sh fnal &"
 #export PS1="\[\033[0;36m\]\u@JHakBookPro\[\033[0;37m\] \w \[\033[0;35m\]▹\[\033[00m\] "
 colo1='\e[0;36m'
 colo2='\e[0;37m'
@@ -51,3 +52,4 @@ alias getdraft="source ~/unabashed/getdraft.sh; ls -1vrt ~/HgammaAN/drafts/*"
 source /Users/johakala/rootInstall/bin/thisroot.sh
 
 alias ssha='source ~/unabashed/ssha.sh'
+alias imgcat="~/imgcat.sh"

@@ -3,12 +3,12 @@
 # The database name can be either 'p5', '904', or 'omds'
 # You will also need to have hcalmanager.jar, RSMANAGER.p5.properties, RSMANAGER.904.properties, and RSMANAGER.omds.properties in your home directory
 # Example: ./hcalmanager.sh omds
-if [ "$1" = "p5" ] || [ "$1" = "904" ] || [ "$1" = "omds" ] ; then
+if [ "$1" = "p5" ] || [ "$1" = "904" ] || [ "$1" = "omds" ] || [ "$1" = "fnal" ]; then
   echo "Launching hcalmanager for the $1 database"
   rm -f ~/RSMANAGER.properties
   cp ~/unabashed/RSMANAGER.${1}.properties ~/RSMANAGER.properties
   java -jar ~/hcalmanager.jar
   # You may need to change the above line to point to where your java 7 jdk or jre's directory
 else
-  echo "Please run hcalmanager.sh with one of the following options for selecting an RS database: 'p5', '904', or 'omds'"
+  echo "Please run hcalmanager.sh with one of the following options for selecting an RS database: 'p5', '904', 'omds', or 'fnal'"
 fi
