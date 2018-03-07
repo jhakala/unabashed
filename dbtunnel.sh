@@ -3,7 +3,7 @@
 # usage: ./dbtunnel.sh outside cms
 # John Hakala 4/14/2016
 if [ $# -ne 2 ]; then
-  echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', or 'fnal'"
+  echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', 'fnal', or 'tifr'"
   exit 1
 fi
 
@@ -13,7 +13,7 @@ if [ $2 = "cms" ]; then
 	elif [ $1 = "cern" ]; then
 		ssh -Y -f -NL:10121:cmsrac31-v:10121 cmsusr.cern.ch
   else
-    echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', or 'fnal'"
+    echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', 'fnal', or 'tifr'"
     exit 1
 	fi
 elif [ $2 = "904" ]; then
@@ -22,7 +22,7 @@ elif [ $2 = "904" ]; then
 	elif [ $1 = "cern" ]; then
 		ssh -Y -f -NL10122:int2r1-v.cern.ch:10121 cms904usr.cern.ch
   else
-    echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', or 'fnal'"
+    echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', 'fnal', or 'tifr'"
     exit 1
 	fi
 elif [ $2 = "omds" ]; then
@@ -31,7 +31,7 @@ elif [ $2 = "omds" ]; then
 	elif [ $1 = "cern" ]; then
     echo "You don't need a tunnel for omds if you're on the CERN GPN."
   else
-    echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', or 'fnal'"
+    echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', 'fnal', or 'tifr'"
     exit 1
 	fi
 elif [ $2 = "fnal" ]; then
@@ -40,10 +40,19 @@ elif [ $2 = "fnal" ]; then
 	elif [ $1 = "cern" ]; then
     echo "Use 'outside' instead of 'cern' for FNAL."
   else
-    echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', or 'fnal'"
+    echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', 'fnal', or 'tifr'"
+    exit 1
+	fi
+elif [ $2 = "tifr" ]; then
+	if [ $1 = "outside" ]; then
+    ssh -NL3311:localhost:3306 camac@158.144.55.7
+	elif [ $1 = "cern" ]; then
+    echo "Use 'outside' instead of 'cern' for TIFR."
+  else
+    echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', 'fnal', or 'tifr'"
     exit 1
 	fi
 else
-  echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', or 'fnal'"
+  echo "Please run dbtunnel with two options. The first can be 'outside' or 'cern', and the second can be 'cms', '904',  'omds', 'fnal', or 'tifr'"
   exit 1
 fi

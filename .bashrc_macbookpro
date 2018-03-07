@@ -53,3 +53,5 @@ source /Users/johakala/rootInstall/bin/thisroot.sh
 
 alias ssha='source ~/unabashed/ssha.sh'
 alias imgcat="~/imgcat.sh"
+  
+export PYTHONSTARTUP=~/unabashed/.pythonrc 
