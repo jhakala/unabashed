@@ -52,6 +52,6 @@ alias getdraft="source ~/unabashed/getdraft.sh; ls -1vrt ~/HgammaAN/drafts/*"
 source /Applications/root_v6.14.06/bin/thisroot.sh
 
 alias ssha='source ~/unabashed/ssha.sh'
-alias imgcat="~/imgcat.sh"
+alias imgcat="~/unabashed/imgcat.sh"
   
 export PATH=${PATH}:/Users/jhakala/Library/Python/2.7/bin
