@@ -22,3 +22,6 @@ alias bsuball_1nh="for i in `ls -1`; do bsub -q 1nh $i; done"
 alias ssha="~/unabashed/ssha.sh"
 
 export _CONDOR_SCRATCH_DIR=/uscms/home/jhakala/nobackup/dangerzone/
+alias lcgenv="source /cvmfs/sft.cern.ch/lcg/views/LCG_97rc4/x86_64-centos7-gcc9-opt/setup.sh"
+
+alias eoscount="~/unabashed/eoscount.sh"
