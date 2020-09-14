@@ -7,7 +7,7 @@
 
 # User specific aliases and functions
 alias ssh="ssh -Y"
-#alias ls="ls -G --color"
+alias ls="ls -G --color"
 alias l="ls -lrth"
 alias rm="rm -i"
 export HCHOSTNAME=$(echo $HOSTNAME | awk '{print substr($1, 0, 9) }')
@@ -20,8 +20,12 @@ alias bhsetup="source bhSetup.sh /afs/cern.ch/user/j/johakala/work/public/CMSSW_
 alias bsuball_8nh="for i in `ls -1`; do bsub -q 8nh $i; done"
 alias bsuball_1nh="for i in `ls -1`; do bsub -q 1nh $i; done"
 alias ssha="~/unabashed/ssha.sh"
+alias tailall="~/unabashed/tailall.sh"
+alias checksites="~/unabashed/checksites.sh"
 
-export _CONDOR_SCRATCH_DIR=/uscms/home/jhakala/nobackup/dangerzone/
-alias lcgenv="source /cvmfs/sft.cern.ch/lcg/views/LCG_97rc4/x86_64-centos7-gcc9-opt/setup.sh"
 
 alias eoscount="~/unabashed/eoscount.sh"
+export _CONDOR_SCRATCH_DIR=${HOME}/dangerzone
+alias jenv6='source /cvmfs/cms.cern.ch/cmsset_default.sh; pushd ~/CMSSW_10_2_22/src; cmsenv; popd'
+alias jenv7='source /cvmfs/cms.cern.ch/cmsset_default.sh; pushd /home/jhakala/cmssw7/CMSSW_10_2_22/src; cmsenv; popd'
+source ~/git-completion.bash
