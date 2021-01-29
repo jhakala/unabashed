@@ -26,9 +26,24 @@ fileb = open(argv[2])
 print "comparing %s and %s" % (filea.name, fileb.name)
 
 # parse jsons
-# these should give an error if the json isn't valid
-jsona = json.load(filea)
-jsonb = json.load(fileb)
+# print errors and exit if the json isn't valid
+jsonProblems = []
+try:
+  jsona = json.load(filea)
+except ValueError as e:
+  print "\n\n  ### error loading JSON", filea.name, "\n\n"
+  jsonProblems.append((filea.name,e))
+try:
+  jsonb = json.load(fileb)
+except ValueError as e:
+  print "\n\n  ### error loading JSON", fileb.name, "\n\n"
+  jsonProblems.append((fileb.name,e))
+if len(jsonProblems) != 0:
+  print "errors from json parsing:"
+  for e in jsonProblems:
+    print "\n-- ", e[0], ":\n", e[1]
+  print "\nexiting"
+  exit(1)
 
 # this lambda function gives the set of things (runs) in either list (the list of json keys) 
 # that are not in the other list. i.e. the complement of the intersection of the two lists
