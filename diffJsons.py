@@ -7,7 +7,7 @@ from os.path import basename, exists, isfile
 # check args
 if not len(argv) == 3:
   print "must supply two json filenames as arguments"
-
+  exit(1)
 fail = False
 if not exists(argv[1]):
   print "file does not exist:", argv[1]
