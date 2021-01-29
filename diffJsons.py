@@ -36,7 +36,8 @@ compl_inter = lambda x, y: list((set(x)- set(y))) + list((set(y)- set(x)))
  
 # find all runs that are in one but not both jsons
 non_match = compl_inter(jsona.keys(), jsonb.keys())
-print "not matching runs:", [int(i) for i in non_match]
+if len(non_match) != 0:
+  print "not matching runs:", [int(i) for i in non_match]
  
 # find all runs present in both but don't contain the same lumisections
 messups = []
@@ -76,3 +77,5 @@ for messup in messups:
   print "       ",  basename(fileb.name)
   print "           ", specb
   
+if len(non_match) == 0 and len(messups) == 0:
+  print "\nJSONs match!"
