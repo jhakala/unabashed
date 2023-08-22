@@ -10,7 +10,6 @@ alias ls="ls -G"
 alias l="ls -lrth"
 alias rm="rm -i"
 alias firefox="/Applications/Firefox.app/Contents/MacOS/firefox-bin"
-alias ssh="ssh -Y"
 export GIT_EDITOR=vim
 #alias vlc="/Applications/VLC.app/Contents/MacOS/VLC"
 #alias ant="/Users/johnhakala/Applications/apache-ant-1.9.4/bin/ant"
@@ -25,7 +24,7 @@ colo1='\e[0;36m'
 colo2='\e[0;37m'
 colo3='\e[0;35m'
 colo4='\e[0;00m'
-export PS1="\[${colo1}\]\u@JHakBookPro\[${colo2}\] \w \[${colo3}\]# \[${colo4}\]"
+export PS1="\[${colo1}\]\u@JHakBookPro\[${colo2}\] \w \[${colo3}\] \[${colo4}\]"
 
 # these are my custom scripts for note taking
 alias note="~/Documents/notes/notes.sh"
@@ -49,9 +48,9 @@ alias dbtunnel="~/unabashed/dbtunnel.sh"
 
 alias pyroot="python -i ~/unabashed/pyroot.py"
 alias getdraft="source ~/unabashed/getdraft.sh; ls -1vrt ~/HgammaAN/drafts/*"
-source /Applications/root_v6.14.06/bin/thisroot.sh
-
+source /Applications/root_v6.24.02/bin/thisroot.sh
 alias ssha='source ~/unabashed/ssha.sh'
 alias imgcat="~/unabashed/imgcat.sh"
   
 export PATH=${PATH}:/Users/jhakala/Library/Python/2.7/bin
+source ~/git-completion.bash
