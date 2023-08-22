@@ -12,8 +12,8 @@ if [ "$1" = "outside" ]; then
   expect -c 'eval spawn ssh -Y -f johakala@lxplus.cern.ch -L1081:localhost:1081 "ssh -f -ND 1081 cmsusr" &; interact'
   expect -c 'eval spawn ssh -Y -f johakala@lxplus.cern.ch -L1080:localhost:1080 "ssh -f -ND 1080 cms904usr" &; interact'
 elif [ "$1" = "cern" ]; then
-  expect -c 'eval spawn ssh -f -ND 1081 cmsusr.cern.ch &; interact'
-  expect -c 'eval spawn ssh -f -ND 1080 cms904usr.cern.ch &; interact'
+  expect -c 'eval spawn ssh -f -ND 1081 johakala@cmsusr.cern.ch &; interact'
+  expect -c 'eval spawn ssh -f -ND 1080 johakala@cms904usr.cern.ch &; interact'
 else
   echo "Please run tunnel.sh with one option: either 'outside' or 'cern'"
   exit 1
