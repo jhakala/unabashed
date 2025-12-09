@@ -47,4 +47,5 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set expandtab
-
+set wrap
+au VimEnter * if &diff | execute 'windo set wrap' | endif
